@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard – Omega Attire</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a class="logo" href="index.html">
+      <span class="logo-omega">Ω</span>
+      <span class="logo-text">OMEGA ATTIRE</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">← Back to Site</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="dark-toggle" id="darkToggle">☽</button>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<!-- LOGIN SCREEN -->
+<div id="adminLogin" class="admin-login-wrap">
+  <div class="admin-login-card">
+    <div class="logo" style="margin-bottom:24px">
+      <span class="logo-omega">Ω</span>
+      <span class="logo-text">OMEGA ATTIRE</span>
+    </div>
+    <h2>Admin Login</h2>
+    <p>Enter your password to access the dashboard.</p>
+    <form id="adminLoginForm" style="display:flex;flex-direction:column;gap:16px">
+      <div class="form-group">
+        <label for="adminPassword">Password</label>
+        <input type="password" id="adminPassword" placeholder="Enter admin password…" required autocomplete="current-password" />
+        <span class="form-err" id="loginErr"></span>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">Login to Dashboard</button>
+      <p style="font-size:.8rem;color:var(--grey-4);text-align:center">Demo password: <code>omega@admin2025</code></p>
+    </form>
+  </div>
+</div>
+
+<!-- DASHBOARD (hidden until login) -->
+<div id="adminDashboard" style="display:none">
+  <div class="admin-layout">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="logo" style="padding:24px 24px 32px;border-bottom:1px solid rgba(255,255,255,.07)">
+        <span class="logo-omega">Ω</span>
+        <span class="logo-text" style="color:rgba(255,255,255,.9)">ADMIN</span>
+      </div>
+      <nav class="admin-nav">
+        <a href="#" class="active" onclick="showTab('reviews')">📋 Reviews</a>
+        <a href="#" onclick="showTab('analytics')">📊 Analytics</a>
+        <a href="#" onclick="showTab('gallery')">🖼 Gallery</a>
+        <a href="#" onclick="showTab('settings')">⚙️ Settings</a>
+        <a href="#" onclick="adminLogout()" style="margin-top:auto;color:#e66;">🚪 Logout</a>
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="admin-main">
+      <div class="admin-topbar">
+        <h1>Dashboard</h1>
+        <div style="display:flex;gap:12px;align-items:center">
+          <span style="font-size:.85rem;color:var(--grey-3)">Welcome, Admin 👋</span>
+          <button class="btn btn-outline" style="padding:8px 16px;font-size:.85rem" onclick="adminLogout()">Logout</button>
+        </div>
+      </div>
+
+      <!-- Stat cards -->
+      <div class="admin-stats">
+        <div class="admin-stat-card">
+          <div class="admin-stat-num" id="adTotal">6</div>
+          <div class="admin-stat-label">Total Reviews</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-num yellow" id="adPending">1</div>
+          <div class="admin-stat-label">Pending Approval</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-num green" id="adApproved">5</div>
+          <div class="admin-stat-label">Approved</div>
+        </div>
+        <div class="admin-stat-card">
+          <div class="admin-stat-num red">4.8★</div>
+          <div class="admin-stat-label">Avg Rating</div>
+        </div>
+      </div>
+
+      <!-- Reviews tab -->
+      <div id="tab-reviews">
+        <div class="admin-table-wrap">
+          <div class="admin-table-header">
+            <h3>📋 All Reviews</h3>
+            <div style="display:flex;gap:8px">
+              <input type="text" placeholder="Search…" style="padding:8px 12px;border:2px solid var(--grey-5);border-radius:6px;font-size:.85rem;background:var(--white);color:var(--black);outline:none" oninput="filterAdminTable(this.value)" />
+              <select style="padding:8px 12px;border:2px solid var(--grey-5);border-radius:6px;font-size:.85rem;background:var(--white);color:var(--black)" onchange="filterAdminByStatus(this.value)">
+                <option value="">All Status</option>
+                <option value="Approved">Approved</option>
+                <option value="Pending">Pending</option>
+                <option value="Rejected">Rejected</option>
+              </select>
+            </div>
+          </div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Rating</th>
+                  <th>Review</th>
+                  <th>Product</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Analytics tab -->
+      <div id="tab-analytics" style="display:none">
+        <div style="background:var(--white);border-radius:var(--radius);padding:32px;box-shadow:var(--shadow)">
+          <h3 style="margin-bottom:24px;font-size:1.1rem;font-weight:700">📊 Review Analytics</h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px">
+            <div style="text-align:center;padding:24px;background:var(--grey-6);border-radius:12px">
+              <div style="font-family:var(--font-display);font-size:2.4rem;color:var(--red)">78%</div>
+              <div style="font-size:.82rem;color:var(--grey-3);margin-top:4px;text-transform:uppercase;letter-spacing:.08em;font-weight:600">5-Star Reviews</div>
+            </div>
+            <div style="text-align:center;padding:24px;background:var(--grey-6);border-radius:12px">
+              <div style="font-family:var(--font-display);font-size:2.4rem;color:var(--red)">97%</div>
+              <div style="font-size:.82rem;color:var(--grey-3);margin-top:4px;text-transform:uppercase;letter-spacing:.08em;font-weight:600">Satisfaction Rate</div>
+            </div>
+            <div style="text-align:center;padding:24px;background:var(--grey-6);border-radius:12px">
+              <div style="font-family:var(--font-display);font-size:2.4rem;color:var(--red)">1.2K+</div>
+              <div style="font-size:.82rem;color:var(--grey-3);margin-top:4px;text-transform:uppercase;letter-spacing:.08em;font-weight:600">Total Customers</div>
+            </div>
+            <div style="text-align:center;padding:24px;background:var(--grey-6);border-radius:12px">
+              <div style="font-family:var(--font-display);font-size:2.4rem;color:var(--red)">23</div>
+              <div style="font-size:.82rem;color:var(--grey-3);margin-top:4px;text-transform:uppercase;letter-spacing:.08em;font-weight:600">Cities Covered</div>
+            </div>
+          </div>
+          <div style="margin-top:32px">
+            <h4 style="margin-bottom:16px;font-weight:700">Rating Distribution</h4>
+            <div style="display:flex;flex-direction:column;gap:10px;max-width:480px">
+              <div style="display:flex;align-items:center;gap:12px"><span style="width:32px;font-size:.85rem;font-weight:600">5★</span><div style="flex:1;height:12px;background:var(--grey-5);border-radius:100px;overflow:hidden"><div style="width:78%;height:100%;background:var(--red);border-radius:100px"></div></div><span style="font-size:.82rem;color:var(--grey-3)">78%</span></div>
+              <div style="display:flex;align-items:center;gap:12px"><span style="width:32px;font-size:.85rem;font-weight:600">4★</span><div style="flex:1;height:12px;background:var(--grey-5);border-radius:100px;overflow:hidden"><div style="width:14%;height:100%;background:#f5a623;border-radius:100px"></div></div><span style="font-size:.82rem;color:var(--grey-3)">14%</span></div>
+              <div style="display:flex;align-items:center;gap:12px"><span style="width:32px;font-size:.85rem;font-weight:600">3★</span><div style="flex:1;height:12px;background:var(--grey-5);border-radius:100px;overflow:hidden"><div style="width:5%;height:100%;background:#6b7280;border-radius:100px"></div></div><span style="font-size:.82rem;color:var(--grey-3)">5%</span></div>
+              <div style="display:flex;align-items:center;gap:12px"><span style="width:32px;font-size:.85rem;font-weight:600">2★</span><div style="flex:1;height:12px;background:var(--grey-5);border-radius:100px;overflow:hidden"><div style="width:2%;height:100%;background:#6b7280;border-radius:100px"></div></div><span style="font-size:.82rem;color:var(--grey-3)">2%</span></div>
+              <div style="display:flex;align-items:center;gap:12px"><span style="width:32px;font-size:.85rem;font-weight:600">1★</span><div style="flex:1;height:12px;background:var(--grey-5);border-radius:100px;overflow:hidden"><div style="width:1%;height:100%;background:#6b7280;border-radius:100px"></div></div><span style="font-size:.82rem;color:var(--grey-3)">1%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gallery tab -->
+      <div id="tab-gallery" style="display:none">
+        <div style="background:var(--white);border-radius:var(--radius);padding:32px;box-shadow:var(--shadow)">
+          <h3 style="margin-bottom:24px;font-size:1.1rem;font-weight:700">🖼 Uploaded Photos</h3>
+          <p style="color:var(--grey-3);font-size:.9rem">Customer-uploaded photos appear here after review approval. Connect Supabase Storage to manage files.</p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-top:24px">
+            <div style="aspect-ratio:1;background:var(--grey-6);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:2rem;color:var(--grey-4)">📷</div>
+            <div style="aspect-ratio:1;background:var(--grey-6);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:var(--grey-4);text-align:center;padding:12px">Connect Supabase to see photos</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings tab -->
+      <div id="tab-settings" style="display:none">
+        <div style="background:var(--white);border-radius:var(--radius);padding:32px;box-shadow:var(--shadow);max-width:560px">
+          <h3 style="margin-bottom:24px;font-size:1.1rem;font-weight:700">⚙️ Site Settings</h3>
+          <div style="display:flex;flex-direction:column;gap:20px">
+            <div class="form-group">
+              <label>Brand Name</label>
+              <input type="text" value="Omega Attire" />
+            </div>
+            <div class="form-group">
+              <label>WhatsApp Number</label>
+              <input type="text" value="+91 99999 99999" />
+            </div>
+            <div class="form-group">
+              <label>Instagram Handle</label>
+              <input type="text" value="@omegaattire" />
+            </div>
+            <div class="form-group">
+              <label>Auto-Approve Reviews</label>
+              <select>
+                <option>No – Manual approval</option>
+                <option>Yes – Auto approve all</option>
+                <option>Yes – Auto approve 4★+</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="showToast('✅ Settings saved!')">Save Settings</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+function showTab(name) {
+  ['reviews','analytics','gallery','settings'].forEach(t => {
+    const el = document.getElementById('tab-' + t);
+    if (el) el.style.display = t === name ? 'block' : 'none';
+  });
+  document.querySelectorAll('.admin-nav a').forEach((a, i) => a.classList.remove('active'));
+  event.target.classList.add('active');
+}
+function filterAdminTable(q) {
+  const rows = document.querySelectorAll('#adminTableBody tr');
+  rows.forEach(row => {
+    row.style.display = row.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
+  });
+}
+function filterAdminByStatus(status) {
+  const rows = document.querySelectorAll('#adminTableBody tr');
+  rows.forEach(row => {
+    const badge = row.querySelector('.status-badge');
+    row.style.display = (!status || (badge && badge.textContent === status)) ? '' : 'none';
+  });
+}
+function showToast(msg) {
+  let t = document.querySelector('.toast');
+  if (!t) { t = document.createElement('div'); t.className = 'toast'; document.body.appendChild(t); }
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
